@@ -9,7 +9,7 @@ const Main = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-slate-200 p-6 rounded-2xl my-6 flex justify-between items-center">
+      <div className="bg-amber-500 p-6 rounded-2xl my-6 flex justify-between items-center">
         <h2 className="text-xl font-bold uppercase">Food store</h2>
         <button
           onClick={handleOpen}
@@ -19,7 +19,7 @@ const Main = () => {
         </button>
       </div>
       {isVisible && <Form onClose={handleClose} />}
-      <FoodView/>
+      <FoodView />
     </div>
   );
 };
