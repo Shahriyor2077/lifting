@@ -1,79 +1,83 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const Form = ({ onClose }) => {
+const Form = ({ onSave, editingFood, onClose }) => {
   const [title, setTitle] = useState("");
-  const [food, setFood] = useState("");
+  const [category, setCategory] = useState("");
   const [isHalal, setIsHalal] = useState(false);
+
+  useEffect(() => {
+    if (editingFood) {
+      setTitle(editingFood.title);
+      setCategory(editingFood.category);
+      setIsHalal(editingFood.isHalal);
+    }
+  }, [editingFood]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const foods = {
-      id: Date.now(),
+    const newFood = {
+      id: editingFood ? editingFood.id : Date.now(),
       title,
-      food,
+      category,
+      isHalal,
     };
-    console.log(foods);
+
+    onSave(newFood);
+    onClose();
+    setTitle("");
+    setCategory("");
+    setIsHalal(false);
   };
 
   return (
-    <>
-      <div
-        onClick={onClose}
-        className="fixed top-0 left-0 w-full h-screen bg-black/30"
-      ></div>
-      <div className="fixed top-1/2 left-1/2 w-[450px] bg-white -translate-1/2 rounded-2xl p-6 ">
-        <h2 className="text-xl font-bold">Create food</h2>
-        <form onSubmit={handleSubmit} action="">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-xl shadow-lg p-6 w-[400px]">
+        <h2 className="text-lg font-bold mb-4">
+          {editingFood ? "Update Food" : "Create Food"}
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
           <input
-            className="border w-full h-10 indent-3 rounded-lg mt-3 border-gray-200"
             type="text"
+            placeholder="Food name"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="food"
+            className="w-full border rounded px-3 py-2"
           />
-          <div className="mt-3 flex gap-1">
-            <input
-              className="border w-full h-10 indent-3 rounded-lg border-gray-200"
-              value={food}
-              onChange={(e) => setFood(e.target.value)}
-              type="text"
-              placeholder="category"
-            />
-            <button
-              type="button"
-              className="bg-slate-900 text-white px-3 rounded-lg text-xl"
-            >
-              &#10011;
-            </button>
-          </div>
-          <label className="flex items-center gap-2 mt-3 cursor-pointer">
+          <input
+            type="text"
+            placeholder="Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full border rounded px-3 py-2"
+          />
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={isHalal}
               onChange={(e) => setIsHalal(e.target.checked)}
               className="w-5 h-5 accent-slate-900"
             />
-            <span className="text-gray-800">Is Halal</span>
+            <span>Is Halal</span>
           </label>
-          <div className="flex gap-2 mt-3">
+          <div className="flex gap-2">
             <button
-              onClick={onClose}
               type="button"
-              className="flex-1 bg-slate-900 text-white py-1.5 rounded-lg"
+              onClick={onClose}
+              className="flex-1 bg-gray-400 text-white rounded py-2"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-slate-900 text-white py-1.5 rounded-lg"
+              className="flex-1 bg-slate-900 text-white rounded py-2"
             >
-              Submit
+              Save
             </button>
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
